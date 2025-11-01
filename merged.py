@@ -19,6 +19,9 @@ def main_menu():
         print("3. Add a Transaction")
         print("4. Edit a Transaction")
         print("5. Delete a Transaction")
+        print("6. Analyze Spending by Category")
+        print("7. Calculate Average Monthly Spending")
+        print("8. Show Top Spending Category")
         print("9. Set Monthly Income")
         print("10. Set Category Budget")
         print("12. Visualize Spending Trends")
@@ -38,6 +41,12 @@ def main_menu():
             edit_transaction()
         elif option == "5":
             delete_transaction()
+        elif option == "6":
+            analyze_spending_by_category()
+        elif option == "7":
+            calculate_average_monthly_spending()
+        elif option == "8":
+            show_top_spending_category()
         elif option == "9":
             set_monthly_income()
         elif option == "10":
@@ -232,6 +241,76 @@ def set_category_budget():
         print(f"Budget for '{category}' set to ${budget:.2f}\n")
     except ValueError:
         print("Invalid input. Please enter a number.\n")
+
+
+# ------------------ Spending Analysis ------------------
+def analyze_spending_by_category():
+    """
+    Display total spending by category.
+    Only considers transactions with Type == 'Expense'
+    """
+    if transactions.empty:
+        print("No transactions to analyze.\n")
+        return
+
+    expenses = transactions[transactions["Type"].str.lower() == "expense"]
+    if expenses.empty:
+        print("No expense transactions found.\n")
+        return
+
+    category_totals = (
+        expenses.groupby("Category")["Amount"].sum().sort_values(ascending=False)
+    )
+    print("\n=== Spending by Category ===")
+    print(category_totals)
+    print("\nTotal Spending: $", category_totals.sum())
+    print("-" * 40)
+
+
+def calculate_average_monthly_spending():
+    """
+    Calculate and display average monthly spending.
+    """
+    if transactions.empty:
+        print("No transactions to analyze.\n")
+        return
+
+    expenses = transactions[transactions["Type"].str.lower() == "expense"].copy()
+    if expenses.empty:
+        print("No expense transactions found.\n")
+        return
+
+    expenses["Date"] = pd.to_datetime(expenses["Date"])
+    monthly_totals = expenses.groupby(expenses["Date"].dt.to_period("M"))[
+        "Amount"
+    ].sum()
+
+    avg_spending = monthly_totals.mean()
+    print("\n=== Average Monthly Spending ===")
+    print(f"Average monthly spending: ${avg_spending:.2f}\n")
+
+
+def show_top_spending_category():
+    """
+    Identify and display the category with the highest spending.
+    """
+    if transactions.empty:
+        print("No transactions to analyze.\n")
+        return
+
+    expenses = transactions[transactions["Type"].str.lower() == "expense"]
+    if expenses.empty:
+        print("No expense transactions found.\n")
+        return
+
+    category_totals = expenses.groupby("Category")["Amount"].sum()
+
+    top_category = category_totals.idxmax()
+    top_amount = category_totals.max()
+
+    print("\n=== Top Spending Category ===")
+    print(f"Category: {top_category}")
+    print(f"Total Spending: ${top_amount:.2f}\n")
 
 
 # ------------------ Visualization ------------------
