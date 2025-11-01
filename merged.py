@@ -24,9 +24,9 @@ def main_menu():
         print("8. Show Top Spending Category")
         print("9. Set Monthly Income")
         print("10. Set Category Budget")
-        print("12. Visualize Spending Trends")
-        print("13. Visualize Income vs Expense Distribution")
-        print("14. Exit")
+        print("11. Visualize Spending Trends")
+        print("12. Visualize Income vs Expense Distribution")
+        print("13. Exit")
 
         option = input("Choose an option: ")
         if option == "0":
@@ -51,11 +51,11 @@ def main_menu():
             set_monthly_income()
         elif option == "10":
             set_category_budget()
-        elif option == "12":
+        elif option == "11":
             visualize_spending_trends()
-        elif option == "13":
+        elif option == "12":
             visualize_income_expense_distribution()
-        elif option == "14":
+        elif option == "13":
             print("Exiting the program.")
             break
         else:
